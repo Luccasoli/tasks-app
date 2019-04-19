@@ -1,9 +1,11 @@
-import React, { Component } from "react";
-import { StyleSheet, Text, View, ImageBackground } from "react-native";
-import moment from "moment";
-import "moment/locale/pt-br";
-import todayImage from "../../assets/imgs/today.jpg";
-import commonStyles from "../commonStyles";
+/* eslint-disable no-use-before-define */
+/* eslint-disable react/prefer-stateless-function */
+import React, { Component } from 'react';
+import { StyleSheet, Text, View, ImageBackground } from 'react-native';
+import moment from 'moment';
+import 'moment/locale/pt-br';
+import todayImage from '../../assets/imgs/today.jpg';
+import commonStyles from '../commonStyles';
 
 export default class Agenda extends Component {
 	render() {
@@ -14,8 +16,8 @@ export default class Agenda extends Component {
 						<Text style={styles.title}>Hoje</Text>
 						<Text style={styles.subtitle}>
 							{moment()
-								.locale("pt-br")
-								.format("ddd, D [de] MMMM")}
+								.locale('pt-br')
+								.format('ddd, D [de] MMMM')}
 						</Text>
 					</View>
 				</ImageBackground>
@@ -38,7 +40,7 @@ const styles = StyleSheet.create({
 	},
 	titleBar: {
 		flex: 1,
-		justifyContent: "flex-end"
+		justifyContent: 'flex-end'
 	},
 	title: {
 		fontFamily: commonStyles.fontFamily,
