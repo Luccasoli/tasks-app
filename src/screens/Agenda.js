@@ -1,13 +1,83 @@
 /* eslint-disable no-use-before-define */
 /* eslint-disable react/prefer-stateless-function */
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, ImageBackground } from 'react-native';
+import {
+	StyleSheet,
+	Text,
+	View,
+	ImageBackground,
+	FlatList
+} from 'react-native';
 import moment from 'moment';
 import 'moment/locale/pt-br';
 import todayImage from '../../assets/imgs/today.jpg';
 import commonStyles from '../commonStyles';
+import Task from '../components/Task';
 
 export default class Agenda extends Component {
+	state = {
+		tasks: [
+			{
+				id: Math.random(),
+				desc: 'Comprar curso de React native',
+				estimateAt: new Date(),
+				doneAt: new Date()
+			},
+			{
+				id: Math.random(),
+				desc: 'Concluir curso de React native',
+				estimateAt: new Date(),
+				doneAt: null
+			},
+			{
+				id: Math.random(),
+				desc: 'Comprar curso de React native',
+				estimateAt: new Date(),
+				doneAt: new Date()
+			},
+			{
+				id: Math.random(),
+				desc: 'Concluir curso de React native',
+				estimateAt: new Date(),
+				doneAt: null
+			},
+			{
+				id: Math.random(),
+				desc: 'Comprar curso de React native',
+				estimateAt: new Date(),
+				doneAt: new Date()
+			},
+			{
+				id: Math.random(),
+				desc: 'Concluir curso de React native',
+				estimateAt: new Date(),
+				doneAt: null
+			},
+			{
+				id: Math.random(),
+				desc: 'Comprar curso de React native',
+				estimateAt: new Date(),
+				doneAt: new Date()
+			},
+			{
+				id: Math.random(),
+				desc: 'Concluir curso de React native',
+				estimateAt: new Date(),
+				doneAt: null
+			},
+		]
+	};
+
+	toggleTask = (id) => {
+		let tasks = this.state.tasks.map(item => {
+			if (item.id === id) {
+				item.doneAt = item.doneAt !== null ? null : new Date()
+			}
+			return item
+		})
+		this.setState({ tasks })
+	}
+
 	render() {
 		return (
 			<View style={styles.container}>
@@ -22,9 +92,11 @@ export default class Agenda extends Component {
 					</View>
 				</ImageBackground>
 				<View style={styles.taskContainer}>
-					<Text>Tarefa 1</Text>
-					<Text>Tarefa 2</Text>
-					<Text>Tarefa 3</Text>
+					<FlatList
+						data={this.state.tasks}
+						keyExtractor={item => item.id.toString()}
+						renderItem={({ item }) => <Task {...item} toggleTask={this.toggleTask} />}
+					/>
 				</View>
 			</View>
 		);
@@ -46,6 +118,13 @@ const styles = StyleSheet.create({
 		fontFamily: commonStyles.fontFamily,
 		color: commonStyles.colors.secondary,
 		fontSize: 50,
+		marginLeft: 20,
+		marginBottom: 30
+	},
+	subtitle: {
+		fontFamily: commonStyles.fontFamily,
+		color: commonStyles.colors.secondary,
+		fontSize: 20,
 		marginLeft: 20,
 		marginBottom: 30
 	},
