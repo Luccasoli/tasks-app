@@ -10,6 +10,7 @@ import {
 	TouchableOpacity,
 	Platform
 } from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
 import moment from 'moment';
 import 'moment/locale/pt-br';
 import todayImage from '../../assets/imgs/today.jpg';
@@ -23,12 +24,14 @@ export default class Agenda extends Component {
 	state = {
 		tasks: [],
 		visibleTasks: [],
-		showDoneTasks: false,
+		showDoneTasks: true,
 		showAddTask: false
 	};
 
-	componentDidMount = () => {
-		this.filterTasks();
+	componentDidMount = async () => {
+		const data = await AsyncStorage.getItem('tasks');
+		const tasks = JSON.parse(data) || [];
+		this.setState({ tasks }, this.filterTasks);
 	};
 
 	addTask = task => {
@@ -49,7 +52,13 @@ export default class Agenda extends Component {
 		);
 	};
 
-	toggleTask = id => {
+	deleteTask = id => {
+		const tasks = this.state.tasks.filter(tasks => tasks.id !== id);
+		this.setState({ tasks });
+		this.filterTasks();
+	};
+
+	onToggleTask = id => {
 		let tasks = this.state.tasks.map(item => {
 			if (item.id === id) {
 				item.doneAt = item.doneAt !== null ? null : new Date();
@@ -69,6 +78,7 @@ export default class Agenda extends Component {
 			visibleTasks = this.state.tasks.filter(isPending);
 		}
 		this.setState({ visibleTasks });
+		AsyncStorage.setItem('tasks', JSON.stringify(this.state.tasks));
 	};
 
 	toggleFilter = () => {
@@ -81,6 +91,33 @@ export default class Agenda extends Component {
 	};
 
 	render() {
+		const tasksList =
+			this.state.visibleTasks.length > 0 ? (
+				<FlatList
+					data={this.state.visibleTasks}
+					keyExtractor={item => item.id.toString()}
+					renderItem={({ item }) => (
+						<Task
+							{...item}
+							onToggleTask={this.onToggleTask}
+							onDelete={this.deleteTask}
+						/>
+					)}
+				/>
+			) : (
+				<View style={{ flex: 1, justifyContent: 'center' }}>
+					<Text
+						style={{
+							alignSelf: 'center',
+							fontSize: 20,
+							fontFamily: commonStyles.fontFamily
+						}}
+					>
+						Não há tarefas para hoje
+					</Text>
+				</View>
+			);
+
 		return (
 			<View style={styles.container}>
 				<AddTask
@@ -111,15 +148,7 @@ export default class Agenda extends Component {
 						</Text>
 					</View>
 				</ImageBackground>
-				<View style={styles.taskContainer}>
-					<FlatList
-						data={this.state.visibleTasks}
-						keyExtractor={item => item.id.toString()}
-						renderItem={({ item }) => (
-							<Task {...item} toggleTask={this.toggleTask} />
-						)}
-					/>
-				</View>
+				<View style={styles.taskContainer}>{tasksList}</View>
 				<ActionButton
 					buttonColor={commonStyles.colors.today}
 					onPress={() => this.setState({ showAddTask: true })}
