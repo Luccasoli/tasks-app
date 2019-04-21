@@ -127,6 +127,6 @@ const styles = StyleSheet.create({
 		fontFamily: commonStyles.fontFamily,
 		color: 'white',
 		fontSize: 20,
-		margin: 10
+		margin: 10,
 	}
 });

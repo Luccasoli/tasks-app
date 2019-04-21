@@ -8,7 +8,8 @@ import {
 	ImageBackground,
 	FlatList,
 	TouchableOpacity,
-	Platform
+	Platform,
+	StatusBar
 } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import moment from 'moment';
@@ -54,8 +55,7 @@ export default class Agenda extends Component {
 
 	deleteTask = id => {
 		const tasks = this.state.tasks.filter(tasks => tasks.id !== id);
-		this.setState({ tasks });
-		this.filterTasks();
+		this.setState({ tasks }, this.filterTasks);
 	};
 
 	onToggleTask = id => {
@@ -91,6 +91,11 @@ export default class Agenda extends Component {
 	};
 
 	render() {
+		const statusBar = Platform.OS == 'android' ?
+			<StatusBar backgroundColor="#400" barStyle="light-content" />
+			:
+			null
+
 		const tasksList =
 			this.state.visibleTasks.length > 0 ? (
 				<FlatList
@@ -120,6 +125,7 @@ export default class Agenda extends Component {
 
 		return (
 			<View style={styles.container}>
+				{statusBar}
 				<AddTask
 					isVisible={this.state.showAddTask}
 					onSave={this.addTask}
