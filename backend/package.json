@@ -1,0 +1,25 @@
+{
+  "name": "tasks_backend",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+      "start": "nodemon"
+  },
+  "dependencies": {
+    "bcrypt-nodejs": "0.0.3",
+    "body-parser": "1.19.0",
+    "consign": "0.1.6",
+    "cors": "2.8.5",
+    "express": "4.16.4",
+    "jwt-simple": "0.5.6",
+    "knex": "0.16.5",
+    "moment": "2.24.0",
+    "passport": "0.4.0" ,
+    "passport-jwt": "4.0.0",
+    "pg": "7.10.0"
+  },
+  "devDependencies": {
+    "nodemon": "1.18.11"
+  }
+}
