@@ -1,14 +1,17 @@
 const express = require('express')
 const app = express()
-const bodyParser = require('body-parser')
+const consign = require('consign')
+const db = require('./config/db')
 
 const PORT = 3000
 
-app.use(bodyParser.json())
+consign()
+    .then('./config/middlewares.js')
+    .then('./api')
+    .then('./config/routes.js')
+    .into(app)
 
-app.get('/', (req, res) => {
-    res.status(200).send('<h1>Bora de express!</h1>')
-})
+app.db = db
 
 app.listen(PORT, () => {
     console.log(`Servidor em execução na porta ${PORT}.`)
