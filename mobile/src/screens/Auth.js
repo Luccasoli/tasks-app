@@ -3,13 +3,13 @@ import {
 	Text,
 	View,
 	StyleSheet,
-	TextInput,
 	ImageBackground,
 	TouchableOpacity,
 	Alert
 } from 'react-native';
 import commonmStyles from '../commonStyles';
 import backgroundImage from '../../assets/imgs/login.jpg';
+import AuthInput from '../components/AuthInput';
 
 export default class Auth extends Component {
 	state = {
@@ -39,27 +39,33 @@ export default class Auth extends Component {
 							: 'Informe seus dados'}
 					</Text>
 					{this.state.stageNew && (
-						<TextInput
+						<AuthInput
+							icon="user"
 							style={styles.input}
 							placeholder="Nome"
 							value={this.state.name}
 							onChangeText={name => this.setState({ name })}
 						/>
 					)}
-					<TextInput
+					<AuthInput
+						icon="at"
 						style={styles.input}
 						placeholder="E-mail"
 						value={this.state.email}
 						onChangeText={email => this.setState({ email })}
 					/>
-					<TextInput
+					<AuthInput
+						icon="lock"
+						secureTextEntry={true}
 						style={styles.input}
 						placeholder="Senha"
 						value={this.state.password}
 						onChangeText={password => this.setState({ password })}
 					/>
 					{this.state.stageNew && (
-						<TextInput
+						<AuthInput
+							icon="asterisk"
+							secureTextEntry={true}
 							style={styles.input}
 							placeholder="Confirmação"
 							value={this.state.confirmPassword}
