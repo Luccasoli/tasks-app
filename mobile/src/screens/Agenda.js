@@ -1,5 +1,3 @@
-/* eslint-disable no-use-before-define */
-/* eslint-disable react/prefer-stateless-function */
 import React, { Component } from 'react';
 import {
 	StyleSheet,
@@ -14,11 +12,11 @@ import {
 import AsyncStorage from '@react-native-community/async-storage';
 import moment from 'moment';
 import 'moment/locale/pt-br';
+import Icon from 'react-native-vector-icons/FontAwesome';
+import ActionButton from 'react-native-action-button';
 import todayImage from '../../assets/imgs/today.jpg';
 import commonStyles from '../commonStyles';
 import Task from '../components/Task';
-import Icon from 'react-native-vector-icons/FontAwesome';
-import ActionButton from 'react-native-action-button';
 import AddTask from './AddTask';
 
 export default class Agenda extends Component {
@@ -37,9 +35,9 @@ export default class Agenda extends Component {
 
 	addTask = task => {
 		this.setState(
-			{
+			prevState => ({
 				tasks: [
-					...this.state.tasks,
+					...prevState.tasks,
 					{
 						id: Math.random(),
 						desc: task.desc,
@@ -48,58 +46,70 @@ export default class Agenda extends Component {
 					}
 				],
 				showAddTask: false
-			},
+			}),
 			this.filterTasks
 		);
 	};
 
 	deleteTask = id => {
-		const tasks = this.state.tasks.filter(tasks => tasks.id !== id);
-		this.setState({ tasks }, this.filterTasks);
+		this.setState(prevState => {
+			const tasks = prevState.tasks.filter(task => task.id !== id);
+			return { tasks };
+		}, this.filterTasks);
 	};
 
 	onToggleTask = id => {
-		let tasks = this.state.tasks.map(item => {
-			if (item.id === id) {
-				item.doneAt = item.doneAt !== null ? null : new Date();
-			}
-			return item;
-		});
-		this.setState({ tasks }, this.filterTasks);
+		this.setState(prevState => {
+			const tasks = prevState.tasks.map(item => {
+				const task = item;
+				if (task.id === id) {
+					task.doneAt = task.doneAt !== null ? null : new Date();
+				}
+				return task;
+			});
+
+			return { tasks };
+		}, this.filterTasks);
 	};
 
 	filterTasks = () => {
-		let visibleTasks = null;
-		if (this.state.showDoneTasks) {
-			visibleTasks = [...this.state.tasks];
-		} else {
-			const isPending = item => item.doneAt === null;
+		this.setState(prevState => {
+			let visibleTasks = null;
+			if (prevState.showDoneTasks) {
+				visibleTasks = [...prevState.tasks];
+			} else {
+				const isPending = item => item.doneAt === null;
 
-			visibleTasks = this.state.tasks.filter(isPending);
-		}
-		this.setState({ visibleTasks });
-		AsyncStorage.setItem('tasks', JSON.stringify(this.state.tasks));
+				visibleTasks = prevState.tasks.filter(isPending);
+			}
+
+			AsyncStorage.setItem('tasks', JSON.stringify(prevState.tasks));
+
+			return { visibleTasks };
+		});
 	};
 
 	toggleFilter = () => {
 		this.setState(
-			{
-				showDoneTasks: !this.state.showDoneTasks
-			},
+			prevState => ({
+				showDoneTasks: !prevState.showDoneTasks
+			}),
 			this.filterTasks
 		);
 	};
 
 	render() {
-		const statusBar = Platform.OS == 'android' ?
-			<StatusBar backgroundColor="#400" barStyle="light-content" />
-			:
-			null
+		const statusBar =
+			Platform.OS === 'android' ? (
+				<StatusBar backgroundColor="#400" barStyle="light-content" />
+			) : null;
+
+		const { visibleTasks } = this.state;
 
 		const tasksList =
-			this.state.visibleTasks.length > 0 ? (
+			visibleTasks.length > 0 ? (
 				<FlatList
-					data={this.state.visibleTasks}
+					data={visibleTasks}
 					keyExtractor={item => item.id.toString()}
 					renderItem={({ item }) => (
 						<Task
@@ -123,11 +133,13 @@ export default class Agenda extends Component {
 				</View>
 			);
 
+		const { showDoneTasks, showAddTask } = this.state;
+
 		return (
 			<View style={styles.container}>
 				{statusBar}
 				<AddTask
-					isVisible={this.state.showAddTask}
+					isVisible={showAddTask}
 					onSave={this.addTask}
 					onCancel={() => this.setState({ showAddTask: false })}
 				/>
@@ -135,11 +147,7 @@ export default class Agenda extends Component {
 					<View style={styles.iconBar}>
 						<TouchableOpacity onPress={this.toggleFilter}>
 							<Icon
-								name={
-									this.state.showDoneTasks
-										? 'eye'
-										: 'eye-slash'
-								}
+								name={showDoneTasks ? 'eye' : 'eye-slash'}
 								size={20}
 								color={commonStyles.colors.secondary}
 							/>

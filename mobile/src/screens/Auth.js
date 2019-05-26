@@ -21,7 +21,8 @@ export default class Auth extends Component {
 	};
 
 	signinOrSignup = () => {
-		if (this.state.stageNew) {
+		const { stageNew } = this.state;
+		if (stageNew) {
 			Alert.alert('Sucesso!', 'Criar conta');
 		} else {
 			Alert.alert('Sucesso!', 'Logar');
@@ -29,21 +30,21 @@ export default class Auth extends Component {
 	};
 
 	render() {
+		const { stageNew, name, email, password, confirmPassword } = this.state;
 		return (
 			<ImageBackground source={backgroundImage} style={styles.background}>
 				<Text style={styles.title}>Tasks</Text>
 				<View style={styles.formContainer}>
 					<Text style={styles.subtitle}>
-						{this.state.stageNew
-							? 'Crie a sua conta'
-							: 'Informe seus dados'}
+						{stageNew ? 'Crie a sua conta' : 'Informe seus dados'}
 					</Text>
-					{this.state.stageNew && (
+					{stageNew && (
 						<AuthInput
 							icon="user"
 							style={styles.input}
 							placeholder="Nome"
-							value={this.state.name}
+							value={name}
+							// eslint-disable-next-line no-shadow
 							onChangeText={name => this.setState({ name })}
 						/>
 					)}
@@ -51,24 +52,27 @@ export default class Auth extends Component {
 						icon="at"
 						style={styles.input}
 						placeholder="E-mail"
-						value={this.state.email}
+						value={email}
+						// eslint-disable-next-line no-shadow
 						onChangeText={email => this.setState({ email })}
 					/>
 					<AuthInput
 						icon="lock"
-						secureTextEntry={true}
+						secureTextEntry
 						style={styles.input}
 						placeholder="Senha"
-						value={this.state.password}
+						value={password}
+						// eslint-disable-next-line no-shadow
 						onChangeText={password => this.setState({ password })}
 					/>
-					{this.state.stageNew && (
+					{stageNew && (
 						<AuthInput
 							icon="asterisk"
-							secureTextEntry={true}
+							secureTextEntry
 							style={styles.input}
 							placeholder="Confirmação"
-							value={this.state.confirmPassword}
+							value={confirmPassword}
+							// eslint-disable-next-line no-shadow
 							onChangeText={confirmPassword =>
 								this.setState({ confirmPassword })
 							}
@@ -77,19 +81,17 @@ export default class Auth extends Component {
 					<TouchableOpacity onPress={this.signinOrSignup}>
 						<View style={styles.button}>
 							<Text style={styles.buttonText}>
-								{this.state.stageNew ? 'Registrar' : 'Entrar'}
+								{stageNew ? 'Registrar' : 'Entrar'}
 							</Text>
 						</View>
 					</TouchableOpacity>
 				</View>
 				<TouchableOpacity
 					style={{ padding: 10 }}
-					onPress={() =>
-						this.setState({ stageNew: !this.state.stageNew })
-					}
+					onPress={() => this.setState({ stageNew: !stageNew })}
 				>
 					<Text style={styles.buttonText}>
-						{this.state.stageNew
+						{stageNew
 							? 'Já possui conta?'
 							: 'Ainda não possui conta?'}
 					</Text>

@@ -13,6 +13,7 @@ import {
 	DatePickerAndroid
 } from 'react-native';
 import moment from 'moment';
+import PropTypes from 'prop-types';
 import commonStyles from '../commonStyles';
 
 export default class AddTask extends Component {
@@ -29,7 +30,10 @@ export default class AddTask extends Component {
 	};
 
 	save = () => {
-		if (!this.state.desc.trim()) {
+		const { desc } = this.state;
+		// eslint-disable-next-line react/prop-types
+		const { onSave } = this.props;
+		if (!desc.trim()) {
 			Alert.alert(
 				'Dados inválidos',
 				'Informe uma descrição para a tarefa'
@@ -37,15 +41,16 @@ export default class AddTask extends Component {
 			return;
 		}
 		const data = { ...this.state };
-		this.props.onSave(data);
+		onSave(data);
 	};
 
 	handleDateAndroidChanged = () => {
+		const { date } = this.state;
 		DatePickerAndroid.open({
-			date: this.state.date
+			date
 		}).then(e => {
 			if (e.action !== DatePickerAndroid.dismissedAction) {
-				const momentDate = moment(this.state.date);
+				const momentDate = moment(date);
 				momentDate.date(e.day);
 				momentDate.month(e.month);
 				momentDate.year(e.year);
@@ -57,12 +62,17 @@ export default class AddTask extends Component {
 	};
 
 	render() {
+		const { date, desc } = this.state;
+		// eslint-disable-next-line react/prop-types
+		const { onCancel, isVisible } = this.props;
+
 		let datePicker = null;
 		if (Platform.OS === 'ios') {
 			datePicker = (
 				<DatePickerIOS
 					mode="date"
-					date={this.state.date}
+					date={date}
+					// eslint-disable-next-line no-shadow
 					onDateChange={date => this.setState({ date })}
 				/>
 			);
@@ -71,9 +81,7 @@ export default class AddTask extends Component {
 				<TouchableOpacity onPress={this.handleDateAndroidChanged}>
 					<View style={{ marginVertical: 25 }}>
 						<Text style={styles.date}>
-							{moment(this.state.date).format(
-								'ddd, D [de] MMMM [de] YYYY'
-							)}
+							{moment(date).format('ddd, D [de] MMMM [de] YYYY')}
 						</Text>
 					</View>
 				</TouchableOpacity>
@@ -82,13 +90,13 @@ export default class AddTask extends Component {
 
 		return (
 			<Modal
-				onRequestClose={this.props.onCancel}
-				visible={this.props.isVisible}
+				onRequestClose={onCancel}
+				visible={isVisible}
 				animationType="slide"
-				transparent={true}
+				transparent
 				onShow={() => this.setState({ ...this.getInitialState() })}
 			>
-				<TouchableWithoutFeedback onPress={this.props.onCancel}>
+				<TouchableWithoutFeedback onPress={onCancel}>
 					<View style={styles.offset} />
 				</TouchableWithoutFeedback>
 				<View style={styles.container}>
@@ -97,8 +105,9 @@ export default class AddTask extends Component {
 						autoFocus
 						placeholder="Descrição..."
 						style={styles.input}
+						// eslint-disable-next-line no-shadow
 						onChangeText={desc => this.setState({ desc })}
-						value={this.state.desc}
+						value={desc}
 					/>
 					{datePicker}
 					<View
@@ -107,7 +116,7 @@ export default class AddTask extends Component {
 							justifyContent: 'flex-end'
 						}}
 					>
-						<TouchableOpacity onPress={this.props.onCancel}>
+						<TouchableOpacity onPress={onCancel}>
 							<Text style={styles.button}>Cancelar</Text>
 						</TouchableOpacity>
 						<TouchableOpacity onPress={this.save}>
@@ -115,13 +124,17 @@ export default class AddTask extends Component {
 						</TouchableOpacity>
 					</View>
 				</View>
-				<TouchableWithoutFeedback onPress={this.props.onCancel}>
+				<TouchableWithoutFeedback onPress={onCancel}>
 					<View style={styles.offset} />
 				</TouchableWithoutFeedback>
 			</Modal>
 		);
 	}
 }
+
+AddTask.prototype = {
+	onSave: PropTypes.object.isRequired
+};
 
 const styles = StyleSheet.create({
 	container: {
