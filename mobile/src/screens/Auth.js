@@ -38,7 +38,7 @@ export default class Auth extends Component {
 				res.data.token
 			}`;
 
-			navigation.navigate('Home');
+			navigation.navigate('Home', res.data);
 		} catch (err) {
 			Alert.alert('Erro!', 'Falha no Login!');
 		}

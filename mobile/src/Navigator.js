@@ -4,6 +4,7 @@ import {
 	createSwitchNavigator,
 	createDrawerNavigator
 } from 'react-navigation';
+import Menu from './screens/Menu';
 import Agenda from './screens/Agenda';
 import Auth from './screens/Auth';
 import commonStyles from './commonStyles';
@@ -41,6 +42,7 @@ const MenuRoutes = {
 
 const MenuConfig = {
 	initialRouteName: 'Today',
+	contentComponent: Menu,
 	contentOptions: {
 		labelStyle: {
 			fontFamily: commonStyles.fontFamily,
