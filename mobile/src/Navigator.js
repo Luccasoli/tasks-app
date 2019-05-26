@@ -7,6 +7,7 @@ import {
 import Menu from './screens/Menu';
 import Agenda from './screens/Agenda';
 import Auth from './screens/Auth';
+import AuthOrApp from './screens/AuthOrApp';
 import commonStyles from './commonStyles';
 
 const MenuRoutes = {
@@ -65,11 +66,15 @@ const MainRoutes = {
 	Home: {
 		name: 'Home',
 		screen: MenuNavigator
+	},
+	Loading: {
+		name: 'Loading',
+		screen: AuthOrApp
 	}
 };
 
 const MainNavigator = createSwitchNavigator(MainRoutes, {
-	initialRouteName: 'Auth'
+	initialRouteName: 'Loading'
 });
 
 export default createAppContainer(MainNavigator);

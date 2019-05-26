@@ -7,6 +7,7 @@ import {
 	TouchableOpacity,
 	Alert
 } from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
 import axios from 'axios';
 import commonmStyles from '../commonStyles';
 import backgroundImage from '../../assets/imgs/login.jpg';
@@ -38,6 +39,7 @@ export default class Auth extends Component {
 				res.data.token
 			}`;
 
+			AsyncStorage.setItem('userData', JSON.stringify(res.data));
 			navigation.navigate('Home', res.data);
 		} catch (err) {
 			Alert.alert('Erro!', 'Falha no Login!');

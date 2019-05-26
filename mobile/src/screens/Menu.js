@@ -1,10 +1,28 @@
 import React from 'react';
-import { Text, StyleSheet, View, ScrollView } from 'react-native';
+import {
+	Text,
+	StyleSheet,
+	View,
+	ScrollView,
+	TouchableOpacity
+} from 'react-native';
+import axios from 'axios';
+import AsyncStorage from '@react-native-community/async-storage';
+import Icon from 'react-native-vector-icons/FontAwesome';
 import { Gravatar } from 'react-native-gravatar';
 import { DrawerItems } from 'react-navigation';
 import commonStyles from '../commonStyles';
 
 export default props => {
+	const logout = () => {
+		// eslint-disable-next-line react/prop-types
+		const { navigation } = props;
+
+		delete axios.defaults.headers.common.Authorization;
+		AsyncStorage.removeItem('userData');
+		navigation.navigate('Loading');
+	};
+
 	// eslint-disable-next-line react/prop-types
 	const { navigation } = props;
 	return (
@@ -27,6 +45,11 @@ export default props => {
 							{navigation.getParam('email')}
 						</Text>
 					</View>
+					<TouchableOpacity onPress={logout}>
+						<View style={styles.logoutIcon}>
+							<Icon name="sign-out" size={30} color="#800" />
+						</View>
+					</TouchableOpacity>
 				</View>
 			</View>
 			<DrawerItems {...props} />
@@ -74,5 +97,10 @@ const styles = StyleSheet.create({
 	userInfo: {
 		flexDirection: 'row',
 		justifyContent: 'space-between'
+	},
+	logoutIcon: {
+		justifyContent: 'center',
+		alignItems: 'center',
+		marginRight: 20
 	}
 });
