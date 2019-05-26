@@ -1,3 +1,5 @@
+/* eslint-disable react/destructuring-assignment */
+/* eslint-disable react/prop-types */
 /* eslint-disable no-undef */
 import React from 'react';
 import {
@@ -10,8 +12,8 @@ import {
 import Icon from 'react-native-vector-icons/FontAwesome';
 import moment from 'moment';
 import 'moment/locale/pt-br';
-import commonStyles from '../commonStyles';
 import Swipeable from 'react-native-swipeable';
+import commonStyles from '../commonStyles';
 
 export default props => {
 	let check = null;
@@ -127,6 +129,6 @@ const styles = StyleSheet.create({
 		fontFamily: commonStyles.fontFamily,
 		color: 'white',
 		fontSize: 20,
-		margin: 10,
+		margin: 10
 	}
 });

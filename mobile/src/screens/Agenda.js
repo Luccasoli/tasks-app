@@ -33,7 +33,13 @@ export default class Agenda extends Component {
 	};
 
 	componentDidMount = async () => {
+		// eslint-disable-next-line react/prop-types
+		const { navigation } = this.props;
 		this.loadTasks();
+
+		navigation.addListener('didFocus', () => {
+			this.loadTasks();
+		});
 	};
 
 	addTask = async task => {
