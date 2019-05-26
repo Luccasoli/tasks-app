@@ -13,7 +13,7 @@ import {
 	DatePickerAndroid
 } from 'react-native';
 import moment from 'moment';
-import PropTypes from 'prop-types';
+// import PropTypes from 'prop-types';
 import commonStyles from '../commonStyles';
 
 export default class AddTask extends Component {
@@ -132,9 +132,9 @@ export default class AddTask extends Component {
 	}
 }
 
-AddTask.prototype = {
-	onSave: PropTypes.object.isRequired
-};
+// AddTask.prototype = {
+// 	onSave: PropTypes.object.isRequired
+// };
 
 const styles = StyleSheet.create({
 	container: {
