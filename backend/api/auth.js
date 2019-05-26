@@ -32,7 +32,7 @@ module.exports = app => {
                 });
             });
         } else {
-            res.status(400).send("Usuário não cadastrado");
+            return res.status(400).send("Usuário não cadastrado");
         }
     };
 

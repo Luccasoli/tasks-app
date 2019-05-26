@@ -16,7 +16,7 @@ module.exports = app => {
 
   const save = (req, res) => {
     if (!validateEmail(req.body.email)) {
-      res.status(400).send("Insira um email válido");
+      return res.status(400).send("Insira um email válido");
     }
 
     obterHash(req.body.password, hash => {
