@@ -9,7 +9,8 @@ import {
 	Platform,
 	StatusBar
 } from 'react-native';
-import AsyncStorage from '@react-native-community/async-storage';
+import axios from 'axios';
+import { showError, server } from '../common';
 import moment from 'moment';
 import 'moment/locale/pt-br';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -28,48 +29,54 @@ export default class Agenda extends Component {
 	};
 
 	componentDidMount = async () => {
-		const data = await AsyncStorage.getItem('tasks');
-		const tasks = JSON.parse(data) || [];
-		this.setState({ tasks }, this.filterTasks);
+		this.loadTasks();
 	};
 
-	addTask = task => {
-		this.setState(
-			prevState => ({
-				tasks: [
-					...prevState.tasks,
-					{
-						id: Math.random(),
-						desc: task.desc,
-						estimateAt: task.date,
-						doneAt: null
-					}
-				],
-				showAddTask: false
-			}),
-			this.filterTasks
-		);
-	};
-
-	deleteTask = id => {
-		this.setState(prevState => {
-			const tasks = prevState.tasks.filter(task => task.id !== id);
-			return { tasks };
-		}, this.filterTasks);
-	};
-
-	onToggleTask = id => {
-		this.setState(prevState => {
-			const tasks = prevState.tasks.map(item => {
-				const task = item;
-				if (task.id === id) {
-					task.doneAt = task.doneAt !== null ? null : new Date();
-				}
-				return task;
+	addTask = async task => {
+		try {
+			await axios.post(`${server}/tasks`, {
+				desc: task.desc,
+				estimateAt: task.date
 			});
 
-			return { tasks };
-		}, this.filterTasks);
+			this.setState({ showAddTask: false }, this.loadTasks);
+		} catch (err) {
+			showError(err);
+		}
+	};
+
+	deleteTask = async id => {
+		try {
+			await axios.delete(`${server}/tasks/${id}`);
+			this.loadTasks();
+		} catch (err) {
+			showError(err);
+		}
+	};
+
+	onToggleTask = async id => {
+		try {
+			await axios.put(`${server}/tasks/${id}/toggle`);
+			await this.loadTasks();
+		} catch (err) {
+			showError(err);
+		}
+	};
+
+	loadTasks = async () => {
+		try {
+			const maxDate = moment().format('YYYY-MM-DD 23:59');
+			const res = await axios.get(`${server}/tasks?date=${maxDate}`);
+
+			this.setState(
+				{
+					tasks: res.data
+				},
+				this.filterTasks
+			);
+		} catch (err) {
+			showError(err);
+		}
 	};
 
 	filterTasks = () => {
@@ -82,8 +89,6 @@ export default class Agenda extends Component {
 
 				visibleTasks = prevState.tasks.filter(isPending);
 			}
-
-			AsyncStorage.setItem('tasks', JSON.stringify(prevState.tasks));
 
 			return { visibleTasks };
 		});
