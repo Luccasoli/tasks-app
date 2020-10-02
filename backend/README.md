@@ -1,9 +1,10 @@
-# Instalação
-1. Instalar dependências
+# Instalação - Installation
 
-...yarn install
+- Instalar dependências (Install dependencies)
 
-2. Criar Banco de dados
+	$ yarn install
 
-...1. Acesse seu BD psql
-...2. CREATE DATABASE tasks;
+- Criar Banco de dados (Create Database)
+
+	1. Acesse seu BD psql
+	2. CREATE DATABASE tasks;
